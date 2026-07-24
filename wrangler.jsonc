@@ -1,0 +1,11 @@
+// Cloudflare Workers deploy config: serves the static bundle in dist/
+// as an assets-only Worker (no server code). Used by `npx wrangler deploy`
+// in the Cloudflare Git build, after `npm run build` has produced dist/.
+{
+  "name": "dungeons-of-caraross",
+  "compatibility_date": "2025-01-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}
