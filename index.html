@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>DUNGEONS OF CARAROSS</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='black'/><path d='M2 14 8 2l6 12H2z' fill='none' stroke='%23e8e8e8'/></svg>" />
   <style>
@@ -14,7 +14,16 @@
       position: fixed; inset: 0; display: flex;
       align-items: center; justify-content: center;
     }
-    canvas { image-rendering: pixelated; image-rendering: crisp-edges; }
+    canvas {
+      image-rendering: pixelated; image-rendering: crisp-edges;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+    }
+    #cmdinput {
+      position: fixed; bottom: 0; left: 0; width: 100%; height: 28px;
+      opacity: 0.01; font-size: 16px; border: none; outline: none;
+      background: transparent; color: transparent; caret-color: transparent;
+      z-index: 5;
+    }
     #panel {
       position: fixed; top: 8px; right: 8px; color: #888; background: #111;
       border: 1px solid #333; padding: 10px; font-size: 12px; display: none;

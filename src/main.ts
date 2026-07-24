@@ -132,17 +132,18 @@ let crtPass: CrtPass | null = null;
 function setupDisplay(): void {
   if (displayCanvas) displayCanvas.remove();
   displayCanvas = document.createElement('canvas');
-  const scale = Math.max(
-    1,
-    Math.floor(
-      Math.min(
-        window.innerWidth / tuning.render.internalWidth,
-        window.innerHeight / tuning.render.internalHeight,
-      ),
-    ),
-  );
+  const availW = window.visualViewport?.width ?? window.innerWidth;
+  const availH = window.visualViewport?.height ?? window.innerHeight;
+  const fit = Math.min(availW / tuning.render.internalWidth, availH / tuning.render.internalHeight);
+  const scale = Math.max(1, Math.floor(fit));
   displayCanvas.width = tuning.render.internalWidth * scale;
   displayCanvas.height = tuning.render.internalHeight * scale;
+  if (scale === 1 && fit > 0) {
+    // Small screens (phones): stretch by CSS, nearest-neighbour, so the
+    // game fills the width instead of rendering as a tiny postage stamp.
+    displayCanvas.style.width = `${Math.floor(tuning.render.internalWidth * fit)}px`;
+    displayCanvas.style.height = `${Math.floor(tuning.render.internalHeight * fit)}px`;
+  }
   stage.appendChild(displayCanvas);
   crtPass = null;
   displayCtx = null;
@@ -157,6 +158,9 @@ function setupDisplay(): void {
 
 setupDisplay();
 window.addEventListener('resize', setupDisplay);
+// The virtual keyboard shrinks the visual viewport; rescale so the
+// command line stays visible above it.
+window.visualViewport?.addEventListener('resize', setupDisplay);
 
 // ---------------------------------------------------------------------------
 // Game state and HUD state
@@ -338,8 +342,68 @@ function restart(): void {
   pushLog('intro_3');
 }
 
+// On touch devices a hidden text input carries the phone keyboard's
+// text into the same submit path the desktop key handler uses.
+const touchCapable = navigator.maxTouchPoints > 0 || 'ontouchstart' in window;
+let mobileInput: HTMLInputElement | null = null;
+
+function sanitizeLine(raw: string): string {
+  return raw.toUpperCase().replace(/[^ -~]/g, '').slice(0, 60);
+}
+
+if (touchCapable) {
+  mobileInput = document.createElement('input');
+  mobileInput.id = 'cmdinput';
+  mobileInput.type = 'text';
+  mobileInput.autocomplete = 'off';
+  mobileInput.spellcheck = false;
+  mobileInput.setAttribute('autocapitalize', 'characters');
+  mobileInput.setAttribute('autocorrect', 'off');
+  mobileInput.setAttribute('enterkeyhint', 'go');
+  mobileInput.setAttribute('aria-label', formatString(strings, 'title'));
+  document.body.appendChild(mobileInput);
+
+  const submitMobile = (): void => {
+    const line = mobileInput!.value;
+    mobileInput!.value = '';
+    hud.inputBuffer = '';
+    if (line.trim().length > 0) submitLine(line);
+  };
+
+  mobileInput.addEventListener('focus', () => {
+    mobileInput!.value = hud.inputBuffer;
+  });
+  mobileInput.addEventListener('input', () => {
+    if (game.state.status !== 'playing') {
+      mobileInput!.value = '';
+      restart();
+      return;
+    }
+    if (hud.lookOverlay) hud.lookOverlay = null;
+    mobileInput!.value = sanitizeLine(mobileInput!.value);
+    hud.inputBuffer = mobileInput!.value;
+  });
+  mobileInput.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Enter') {
+      ev.preventDefault();
+      if (game.state.status !== 'playing') restart();
+      else submitMobile();
+    }
+  });
+  // Some virtual keyboards report Enter only as an insertLineBreak edit.
+  mobileInput.addEventListener('beforeinput', (ev) => {
+    if (ev.inputType === 'insertLineBreak') {
+      ev.preventDefault();
+      if (game.state.status !== 'playing') restart();
+      else submitMobile();
+    }
+  });
+}
+
 window.addEventListener('keydown', (ev) => {
   engine.ensure();
+  // Keystrokes inside the mobile input are handled by its own listeners.
+  if (mobileInput && ev.target === mobileInput) return;
 
   if (game.state.status !== 'playing') {
     if (ev.key.length === 1 || ev.key === 'Enter' || ev.key === ' ') restart();
@@ -410,6 +474,18 @@ window.addEventListener('keydown', (ev) => {
 });
 
 window.addEventListener('pointerdown', () => engine.ensure());
+
+// A tap on the game (not the settings panel) summons the keyboard.
+// Focus happens on click: focusing during pointerdown is undone by the
+// browser's follow-up mouse events landing on the canvas.
+window.addEventListener('click', (ev) => {
+  if (!mobileInput) return;
+  const target = ev.target instanceof HTMLElement ? ev.target : null;
+  const panel = document.getElementById('panel');
+  const gear = document.getElementById('gear');
+  const inPanel = target !== null && ((panel?.contains(target) ?? false) || target === gear);
+  if (!inPanel) mobileInput.focus();
+});
 
 // ---------------------------------------------------------------------------
 // Debug overlay

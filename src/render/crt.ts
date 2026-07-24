@@ -20,7 +20,7 @@ uniform vec2 uRes;
 vec2 barrel(vec2 uv) {
   vec2 c = uv - 0.5;
   float r2 = dot(c, c);
-  return uv + c * r2 * 0.12;
+  return uv + c * r2 * 0.08;
 }
 
 void main() {

@@ -12,17 +12,19 @@ const W = tuning.render.internalWidth;
 const H = tuning.render.internalHeight;
 const WORLD_H = tuning.render.worldHeight;
 
-// Band layout inside the 64 rows under the world view. The log's last
-// line must end above the divider or messages paint over the prompt.
-const HANDS_Y = WORLD_H + 2; // 130..147
+// Band layout inside the 68 rows under the world view. The log's last
+// line must end above the divider or messages paint over the prompt,
+// and the command row keeps clear bottom margin so it survives the
+// CRT pass's barrel curve.
+const HANDS_Y = WORLD_H + 2; // 126..143
 const HANDS_H = 18;
-const PULSE_Y = HANDS_Y + HANDS_H + 2; // 150..154
+const PULSE_Y = HANDS_Y + HANDS_H + 2; // 146..150
 const PULSE_H = 5;
-const LOG_Y = PULSE_Y + PULSE_H + 3; // 157, 165, 173
+const LOG_Y = PULSE_Y + PULSE_H + 3; // 154, 162, 170
 const LOG_LINES = 3;
 const LOG_PITCH = 8;
-const DIVIDER_Y = H - 10; // 182
-const CMD_Y = H - 8; // 184..190
+const DIVIDER_Y = H - 13; // 179
+const CMD_Y = H - 11; // 181..187, 4 rows of margin below
 
 export interface HudState {
   log: string[];
