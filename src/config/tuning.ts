@@ -35,6 +35,10 @@ export const tuning = {
     wallHeight: 1.0,
     /** Camera eye height, world units. */
     eyeHeight: 0.5,
+    /** Eye sits this far behind the cell centre, along the facing, so
+     * the wall ahead projects inside the frame (the nested-rectangle
+     * tunnel of the original). */
+    cameraBackOff: 0.38,
     /** Doorway opening: half-width and height, world units. */
     doorHalfWidth: 0.22,
     doorHeight: 0.72,
@@ -148,8 +152,8 @@ export const tuning = {
   },
 
   debug: {
-    /** Ticks between debug overlay refreshes. */
-    mapCellPx: 5,
+    /** Debug map overlay: pixels per cell. */
+    mapCellPx: 3,
   },
 } as const;
 
