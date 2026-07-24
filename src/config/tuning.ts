@@ -148,7 +148,7 @@ export const tuning = {
 
   save: {
     schemaVersion: 1,
-    storagePrefix: 'daggorath.v1.slot.',
+    storagePrefix: 'caraross.v1.slot.',
   },
 
   debug: {

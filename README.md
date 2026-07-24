@@ -1,6 +1,7 @@
-# DAGGORATH.JS
+# DUNGEONS OF CARAROSS
 
-A browser reimplementation of the 1982 wireframe dungeon crawl
+Working title DAGGORATH.JS. A browser reimplementation of the 1982
+wireframe dungeon crawl
 *Dungeons of Daggorath* (Tandy / DynaMicro), built from the written
 specification alone: no original code, strings, maps or sprite data.
 TypeScript, Canvas 2D, Web Audio; no runtime dependencies; ships as a

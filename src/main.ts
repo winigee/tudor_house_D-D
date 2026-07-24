@@ -81,7 +81,7 @@ interface Settings {
   arrowKeys: boolean;
 }
 
-const SETTINGS_KEY = 'daggorath.settings';
+const SETTINGS_KEY = 'caraross.settings';
 
 function loadSettings(): Settings {
   const defaults: Settings = {
@@ -633,7 +633,7 @@ function buildPanel(): void {
     const blob = new Blob([JSON.stringify(serializeGame(game.state))], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'daggorath-save.json';
+    a.download = 'caraross-save.json';
     a.click();
     URL.revokeObjectURL(a.href);
   });

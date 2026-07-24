@@ -167,7 +167,7 @@ export function logPlaceholders(content: Content): void {
   placeholdersLogged = true;
   const missing = Object.keys(content.creatures).filter((id) => !faces[id]?.img96);
   if (missing.length > 0) {
-    console.info(`DAGGORATH.JS: procedural placeholder faces in use for: ${missing.join(', ')}`);
+    console.info(`DUNGEONS OF CARAROSS: procedural placeholder faces in use for: ${missing.join(', ')}`);
   }
 }
 
