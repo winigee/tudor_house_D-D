@@ -77,7 +77,7 @@ JSON export/import in the settings panel.
 On Cloudflare, `wrangler.jsonc` deploys `dist/` as an assets-only
 Worker. In the Git-connected Workers flow use build command
 `npm run build` and deploy command `npx wrangler deploy` (project name
-`dungeons-of-caraross`, matching the config); in the classic Pages
+`caraross`, matching the config); in the classic Pages
 flow use build command `npm run build` with output directory `dist`
 and no deploy command.
 
