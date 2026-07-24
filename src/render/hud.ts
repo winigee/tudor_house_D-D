@@ -12,13 +12,16 @@ const W = tuning.render.internalWidth;
 const H = tuning.render.internalHeight;
 const WORLD_H = tuning.render.worldHeight;
 
-const HANDS_Y = WORLD_H + 2;
-const HANDS_H = 22;
-const PULSE_Y = HANDS_Y + HANDS_H + 2;
+// Band layout inside the 58 rows under the world view. The log's last
+// line must end above CMD_Y or messages paint over the command line.
+const HANDS_Y = WORLD_H + 2; // 136..154
+const HANDS_H = 19;
+const PULSE_Y = HANDS_Y + HANDS_H + 1; // 156..160
 const PULSE_H = 5;
-const LOG_Y = PULSE_Y + PULSE_H + 3;
+const LOG_Y = PULSE_Y + PULSE_H + 1; // 162, 169, 176
 const LOG_LINES = 3;
-const CMD_Y = H - LINE_HEIGHT;
+const LOG_PITCH = 7;
+const CMD_Y = H - 8; // 184..190
 
 export interface HudState {
   log: string[];
@@ -99,14 +102,14 @@ export function drawHud(
     if (inst) {
       const def = content.items[inst.defId]!;
       const name = inst.identified ? def.revealedName : def.name;
-      drawItemIcon(ctx, def.kind, x + 3, HANDS_Y + 11, fg);
-      drawText(ctx, name.slice(0, 18), x + 15, HANDS_Y + 12);
+      drawItemIcon(ctx, def.kind, x + 3, HANDS_Y + 9, fg);
+      drawText(ctx, name.slice(0, 18), x + 15, HANDS_Y + 10);
       if (def.kind === 'torch' && inst.lit) {
         // A lit torch pulses its icon.
-        if (Math.floor(nowMs / 300) % 2 === 0) ctx.fillRect(x + 6, HANDS_Y + 9, 2, 2);
+        if (Math.floor(nowMs / 300) % 2 === 0) ctx.fillRect(x + 6, HANDS_Y + 7, 2, 2);
       }
     } else {
-      drawText(ctx, formatString(s, 'hud_empty_hand'), x + 15, HANDS_Y + 12);
+      drawText(ctx, formatString(s, 'hud_empty_hand'), x + 15, HANDS_Y + 10);
     }
   }
 
@@ -127,9 +130,9 @@ export function drawHud(
 
   // Message log or portrait panel (mode C swaps it while a creature shows).
   if (hud.portrait) {
-    const size = 40;
+    const size = 32;
     const px = 4;
-    const py = LOG_Y - 14;
+    const py = LOG_Y - 15;
     ctx.fillStyle = '#000';
     ctx.fillRect(px - 2, py - 2, size + 4, size + 4);
     ctx.fillStyle = fg;
@@ -141,7 +144,7 @@ export function drawHud(
   } else {
     for (let i = 0; i < LOG_LINES; i++) {
       const line = hud.log[hud.log.length - LOG_LINES + i];
-      if (line) drawText(ctx, line.slice(0, 42), 3, LOG_Y + i * (LINE_HEIGHT - 2));
+      if (line) drawText(ctx, line.slice(0, 42), 3, LOG_Y + i * LOG_PITCH);
     }
   }
 

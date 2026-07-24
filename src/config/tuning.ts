@@ -21,7 +21,7 @@ export const tuning = {
     /** Number of discrete line intensity levels. */
     intensityLevels: 4,
     /** Dash patterns per intensity level, brightest first. */
-    dashPatterns: [[], [4, 1], [2, 2], [1, 3]] as number[][],
+    dashPatterns: [[], [4, 1], [2, 2], [1, 2]] as number[][],
     /** Default phosphor palette. */
     palettes: {
       white: { fg: '#e8e8e8', bg: '#000000' },

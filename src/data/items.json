@@ -61,7 +61,7 @@
     "identified": true,
     "radius": 3,
     "burnTicks": 10800,
-    "intensity": 2
+    "intensity": 3
   },
   {
     "id": "torch_bronze",
@@ -85,7 +85,7 @@
     "identified": false,
     "radius": 5,
     "burnTicks": 21600,
-    "intensity": 3
+    "intensity": 4
   },
   {
     "id": "torch_solar",

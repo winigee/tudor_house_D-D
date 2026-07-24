@@ -310,7 +310,10 @@ let paused = false;
 let stepOnce = false;
 let debugMap = true;
 
-function submitLine(line: string): void {
+function submitLine(line: string, echo = true): void {
+  // Echo typed submissions into the log so entered commands visibly
+  // scroll away (the key-binding layer stays silent).
+  if (echo) pushLogText(`>${line.trim().toUpperCase()}`);
   const result = parse(line, debugEnabled);
   if (!result.ok) {
     pushLog(result.errorKey, result.params);
@@ -378,9 +381,10 @@ window.addEventListener('keydown', (ev) => {
       z: 'ATTACK LEFT',
       x: 'ATTACK RIGHT',
     };
-    const line = bound[ev.key];
+    const keyId = ev.key.length === 1 ? ev.key.toLowerCase() : ev.key;
+    const line = bound[keyId];
     if (line && hud.inputBuffer.length === 0) {
-      submitLine(line);
+      submitLine(line, false);
       ev.preventDefault();
       return;
     }
