@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DAGGORATH.JS</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0; background: #000; height: 100%;
+      overflow: hidden; font-family: monospace;
+    }
+    #stage {
+      position: fixed; inset: 0; display: flex;
+      align-items: center; justify-content: center;
+    }
+    canvas { image-rendering: pixelated; image-rendering: crisp-edges; }
+    #panel {
+      position: fixed; top: 8px; right: 8px; color: #888; background: #111;
+      border: 1px solid #333; padding: 10px; font-size: 12px; display: none;
+      max-width: 320px; max-height: 90vh; overflow-y: auto; z-index: 10;
+    }
+    #panel h3 { margin: 6px 0 2px; color: #ccc; font-size: 12px; }
+    #panel label { display: block; margin: 3px 0; }
+    #panel button, #panel select { font-family: monospace; font-size: 11px; }
+    #panel .credits { white-space: pre-wrap; color: #666; }
+    #gear {
+      position: fixed; top: 8px; right: 8px; z-index: 11; color: #444;
+      background: none; border: none; font-size: 16px; cursor: pointer;
+    }
+    #gear:hover { color: #999; }
+  </style>
+</head>
+<body>
+  <div id="stage"></div>
+  <button id="gear" title="settings">*</button>
+  <div id="panel"></div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
