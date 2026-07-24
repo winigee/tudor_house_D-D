@@ -251,6 +251,17 @@ export function buildScene(content: Content, state: GameState, radius: number, b
     const x = idx % level.size.w;
     const y = Math.floor(idx / level.size.w);
     const cellDist = Math.hypot(x - p.x, y - p.y);
+    // Floor and ceiling seams on every cell boundary: the transverse
+    // lines that sweep past during movement and sell the parallax.
+    for (const side of SIDES) {
+      const seamKey = `seam:${wallKey(x, y, side)}`;
+      if (!seen.has(seamKey)) {
+        seen.add(seamKey);
+        const c = wallCorners(x, y, side);
+        segs.push({ ax: c[0]![0], ay: 0, az: c[0]![2], bx: c[1]![0], by: 0, bz: c[1]![2], dist: cellDist });
+        segs.push({ ax: c[3]![0], ay: WALL_H, az: c[3]![2], bx: c[2]![0], by: WALL_H, bz: c[2]![2], dist: cellDist });
+      }
+    }
     for (const side of SIDES) {
       if (!(cellAt(level, x, y).walls & SIDE_BIT[side])) continue;
       const key = wallKey(x, y, side);

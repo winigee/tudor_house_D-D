@@ -10,8 +10,9 @@ export const tuning = {
   render: {
     internalWidth: 256,
     internalHeight: 192,
-    /** World band height in internal pixels (upper ~70%). */
-    worldHeight: 134,
+    /** World band height in internal pixels (upper two thirds; trimmed
+     * from the spec's 70% to give the text bands breathing room). */
+    worldHeight: 128,
     /** Horizontal field of view, degrees. */
     fovDegrees: 90,
     /** Move / turn visual transition, milliseconds. */

@@ -12,15 +12,16 @@ const W = tuning.render.internalWidth;
 const H = tuning.render.internalHeight;
 const WORLD_H = tuning.render.worldHeight;
 
-// Band layout inside the 58 rows under the world view. The log's last
-// line must end above CMD_Y or messages paint over the command line.
-const HANDS_Y = WORLD_H + 2; // 136..154
-const HANDS_H = 19;
-const PULSE_Y = HANDS_Y + HANDS_H + 1; // 156..160
+// Band layout inside the 64 rows under the world view. The log's last
+// line must end above the divider or messages paint over the prompt.
+const HANDS_Y = WORLD_H + 2; // 130..147
+const HANDS_H = 18;
+const PULSE_Y = HANDS_Y + HANDS_H + 2; // 150..154
 const PULSE_H = 5;
-const LOG_Y = PULSE_Y + PULSE_H + 1; // 162, 169, 176
+const LOG_Y = PULSE_Y + PULSE_H + 3; // 157, 165, 173
 const LOG_LINES = 3;
-const LOG_PITCH = 7;
+const LOG_PITCH = 8;
+const DIVIDER_Y = H - 10; // 182
 const CMD_Y = H - 8; // 184..190
 
 export interface HudState {
@@ -102,14 +103,14 @@ export function drawHud(
     if (inst) {
       const def = content.items[inst.defId]!;
       const name = inst.identified ? def.revealedName : def.name;
-      drawItemIcon(ctx, def.kind, x + 3, HANDS_Y + 9, fg);
-      drawText(ctx, name.slice(0, 18), x + 15, HANDS_Y + 10);
+      drawItemIcon(ctx, def.kind, x + 3, HANDS_Y + 8, fg);
+      drawText(ctx, name.slice(0, 18), x + 15, HANDS_Y + 9);
       if (def.kind === 'torch' && inst.lit) {
         // A lit torch pulses its icon.
-        if (Math.floor(nowMs / 300) % 2 === 0) ctx.fillRect(x + 6, HANDS_Y + 7, 2, 2);
+        if (Math.floor(nowMs / 300) % 2 === 0) ctx.fillRect(x + 6, HANDS_Y + 6, 2, 2);
       }
     } else {
-      drawText(ctx, formatString(s, 'hud_empty_hand'), x + 15, HANDS_Y + 10);
+      drawText(ctx, formatString(s, 'hud_empty_hand'), x + 15, HANDS_Y + 9);
     }
   }
 
@@ -147,6 +148,9 @@ export function drawHud(
       if (line) drawText(ctx, line.slice(0, 42), 3, LOG_Y + i * LOG_PITCH);
     }
   }
+
+  // Divider between the log and the command row.
+  ctx.fillRect(0, DIVIDER_Y, W, 1);
 
   // Command line with blinking block cursor.
   const prompt = '>';

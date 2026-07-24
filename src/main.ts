@@ -37,6 +37,7 @@ import { AudioEngine } from './audio/engine.ts';
 import { Cues } from './audio/cues.ts';
 import { Heartbeat } from './audio/heartbeat.ts';
 
+import pkg from '../package.json';
 import stringsRaw from './data/strings.json';
 import itemsRaw from './data/items.json';
 import creaturesRaw from './data/creatures.json';
@@ -67,6 +68,7 @@ function loadContent(): Content {
 
 const content = loadContent();
 logPlaceholders(content);
+console.info(`DUNGEONS OF CARAROSS v${pkg.version}`);
 
 // ---------------------------------------------------------------------------
 // Settings
@@ -272,6 +274,7 @@ bus.subscribe((ev: SimEvent) => {
       cues.torchOut();
       break;
     case 'bump':
+      lastBumpMs = performance.now();
       cues.bump();
       break;
     case 'climbed':
@@ -463,6 +466,7 @@ const TICK_MS = 1000 / tuning.sim.tickHz;
 let accumulator = 0;
 let lastTime = performance.now();
 let wasFaint = false;
+let lastBumpMs = -Infinity;
 
 function facingAngle(): number {
   return (game.state.player.facing * Math.PI) / 2;
@@ -517,6 +521,12 @@ function frame(now: number): void {
   const seen = visibleCreatures(content, game.state, cam, radius, scene.visible);
   const inserts = creatureInserts(ictx, content, game.state, cam, seen, settings.faceMode, fg, radius, brightest);
   drawScene(ictx, scene, cam, fg, inserts);
+  // A blocked step flashes the view border so the wall is unmissable.
+  if (now - lastBumpMs < 160) {
+    ictx.strokeStyle = fg;
+    ictx.lineWidth = 2;
+    ictx.strokeRect(1, 1, tuning.render.internalWidth - 2, tuning.render.worldHeight - 2);
+  }
   ictx.restore();
 
   // Mode C portrait: nearest visible creature.
@@ -565,7 +575,7 @@ function buildPanel(): void {
     return div.firstElementChild as HTMLElement;
   };
 
-  const title = h(`<h3>${formatString(strings, 'title')}</h3>`);
+  const title = h(`<h3>${formatString(strings, 'title')} v${pkg.version}</h3>`);
   panel.appendChild(title);
 
   // Phosphor palette.
