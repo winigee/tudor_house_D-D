@@ -31,7 +31,8 @@ dark. Try: `PULL TORCH LEFT`, `USE LEFT`, `PULL SWORD RIGHT`, then
 Escape flushes queued commands. The arrow keys and Z/X mirror the
 movement and attack verbs (toggle in the settings panel, top right).
 
-The wizard waits on floor 5.
+The Ross waits on floor 5, and the CarrotAss prowls the deep floors
+before him.
 
 ## Commands
 

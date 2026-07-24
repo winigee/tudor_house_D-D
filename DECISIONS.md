@@ -63,8 +63,13 @@ option closer to the 1982 original.
 - **Mode C name plates unlock on first blood.** The portrait names a
   creature type once the player has struck one, standing in for
   "identified" until the author rules otherwise.
-- **Victory triggers on any tier-5 kill.** Only the wizard is tier 5;
-  the rule lives in data rather than a hard-coded id.
+- **Victory triggers on any tier-5 kill.** Only the Ross (creature id
+  `wizard`) is tier 5; the rule lives in data rather than a hard-coded
+  id.
+- **Boss names are display-only changes.** The Ross and the CarrotAss
+  (author's naming) keep their original ids `wizard` and `stone_giant`
+  in levels and saves, so committed floor files and replay hashes
+  survive the rename.
 - **Debug commands are typed with a `$` prefix** (`$TELEPORT x y`,
   `$SPAWN id`, `$PULSE`, `$TORCH`), parsed only under `?debug=1`, so the
   shipping parser has no reserved words beyond the sixteen verbs.

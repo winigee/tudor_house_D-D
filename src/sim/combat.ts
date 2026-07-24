@@ -98,6 +98,10 @@ export function resolveCreatureAttack(
   applyShock(player, creatureDef.pulseShock);
   player.exertion += dmg * tuning.pulse.hitExertionFactor;
   events.push({ type: 'playerHit', shock: creatureDef.pulseShock, blocked: false });
-  events.push({ type: 'message', key: 'attack_landed', params: { creature: creatureDef.name } });
+  events.push({
+    type: 'message',
+    key: creatureDef.attackMessageKey ?? 'attack_landed',
+    params: { creature: creatureDef.name },
+  });
   return { blocked: false, shieldBroke: false, shock: creatureDef.pulseShock };
 }

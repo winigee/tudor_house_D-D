@@ -100,9 +100,10 @@
   },
   {
     "id": "stone_giant",
-    "name": "STONE GIANT",
+    "name": "CARROTASS",
     "tier": 4,
-    "silhouette": "giant",
+    "silhouette": "carrot",
+    "attackMessageKey": "attack_landed_carrotass",
     "health": 55,
     "attackDamage": [6, 14],
     "attackPeriodTicks": 60,
@@ -135,7 +136,7 @@
   },
   {
     "id": "wizard_image",
-    "name": "WIZARD'S IMAGE",
+    "name": "ROSS'S IMAGE",
     "tier": 4,
     "silhouette": "wizard",
     "health": 26,
@@ -151,9 +152,10 @@
   },
   {
     "id": "wizard",
-    "name": "ARCHMAGE",
+    "name": "ROSS",
     "tier": 5,
     "silhouette": "wizard",
+    "attackMessageKey": "attack_landed_ross",
     "health": 70,
     "attackDamage": [8, 16],
     "attackPeriodTicks": 40,

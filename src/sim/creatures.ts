@@ -36,6 +36,8 @@ export interface CreatureDef {
   soundId: string;
   drops: CreatureDrop[];
   pulseShock: number;
+  /** Optional strings.json key replacing the stock attack_landed line. */
+  attackMessageKey?: string;
 }
 
 export type CreatureAiState = 'idle' | 'hunting' | 'attacking' | 'fleeing';
@@ -79,6 +81,8 @@ export function validateCreatures(raw: unknown, path: string): Record<string, Cr
     if (!m || typeof m.physical !== 'number' || typeof m.fire !== 'number' || typeof m.ice !== 'number')
       fail('damageMultipliers', 'must hold physical, fire, ice');
     if (typeof d.soundId !== 'string') fail('soundId', 'must be a string');
+    if (d.attackMessageKey !== undefined && typeof d.attackMessageKey !== 'string')
+      fail('attackMessageKey', 'must be a string when present');
     if (!Array.isArray(d.drops)) fail('drops', 'must be an array');
     out[d.id] = d;
   });
