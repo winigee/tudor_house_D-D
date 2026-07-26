@@ -24,6 +24,23 @@
       background: transparent; color: transparent; caret-color: transparent;
       z-index: 5;
     }
+    #touchpad {
+      position: fixed; bottom: 34px; left: 0; width: 100%;
+      display: flex; justify-content: space-between; align-items: flex-end;
+      padding: 0 10px 6px; box-sizing: border-box; z-index: 4;
+      pointer-events: none; -webkit-tap-highlight-color: transparent;
+    }
+    #touchpad .pad { display: grid; grid-template-columns: repeat(3, 46px); gap: 4px; }
+    #touchpad .acts { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
+    #touchpad button {
+      pointer-events: auto; width: 46px; height: 42px;
+      background: rgba(0, 0, 0, 0.55); color: #cfcfcf;
+      border: 1px solid #666; border-radius: 4px;
+      font-family: monospace; font-size: 13px; padding: 0;
+      touch-action: manipulation; user-select: none; -webkit-user-select: none;
+    }
+    #touchpad .acts button { width: 64px; }
+    #touchpad button:active { background: rgba(180, 180, 180, 0.35); }
     #panel {
       position: fixed; top: 8px; right: 8px; color: #888; background: #111;
       border: 1px solid #333; padding: 10px; font-size: 12px; display: none;

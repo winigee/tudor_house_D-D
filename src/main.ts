@@ -475,17 +475,77 @@ window.addEventListener('keydown', (ev) => {
 
 window.addEventListener('pointerdown', () => engine.ensure());
 
-// A tap on the game (not the settings panel) summons the keyboard.
-// Focus happens on click: focusing during pointerdown is undone by the
-// browser's follow-up mouse events landing on the canvas.
+// A tap on the game (not the settings panel or touch pad) summons the
+// keyboard. Focus happens on click: focusing during pointerdown is
+// undone by the browser's follow-up mouse events landing on the canvas.
 window.addEventListener('click', (ev) => {
   if (!mobileInput) return;
   const target = ev.target instanceof HTMLElement ? ev.target : null;
   const panel = document.getElementById('panel');
   const gear = document.getElementById('gear');
-  const inPanel = target !== null && ((panel?.contains(target) ?? false) || target === gear);
-  if (!inPanel) mobileInput.focus();
+  const skip =
+    target !== null &&
+    ((panel?.contains(target) ?? false) || target === gear || target.closest('#touchpad') !== null);
+  if (!skip) mobileInput.focus();
 });
+
+// On-screen buttons for touch play: the same intents the parser
+// produces, nothing more (spec section 9's binding-layer rule).
+let touchpad: HTMLElement | null = null;
+
+function flushQueueFromUi(): void {
+  if (game.state.queue.length > 0) {
+    flushQueue(game.state);
+    pushLog('queue_flushed');
+  }
+  hud.inputBuffer = '';
+  if (mobileInput) mobileInput.value = '';
+}
+
+if (touchCapable) {
+  touchpad = document.createElement('div');
+  touchpad.id = 'touchpad';
+  const pad = document.createElement('div');
+  pad.className = 'pad';
+  const acts = document.createElement('div');
+  acts.className = 'acts';
+  touchpad.appendChild(pad);
+  touchpad.appendChild(acts);
+
+  const makeButton = (labelKey: string, onPress: () => void): HTMLButtonElement => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = formatString(strings, labelKey);
+    btn.addEventListener('pointerdown', (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      engine.ensure();
+      if (game.state.status !== 'playing') {
+        restart();
+        return;
+      }
+      if (hud.lookOverlay) hud.lookOverlay = null;
+      onPress();
+    });
+    return btn;
+  };
+
+  const spacer = (): HTMLElement => document.createElement('span');
+  // D-pad: turn left / move / turn right on top, back below.
+  pad.appendChild(makeButton('touch_turn_left', () => submitLine('TURN LEFT', false)));
+  pad.appendChild(makeButton('touch_move', () => submitLine('MOVE', false)));
+  pad.appendChild(makeButton('touch_turn_right', () => submitLine('TURN RIGHT', false)));
+  pad.appendChild(spacer());
+  pad.appendChild(makeButton('touch_back', () => submitLine('BACK', false)));
+  pad.appendChild(spacer());
+
+  acts.appendChild(makeButton('touch_escape', flushQueueFromUi));
+  acts.appendChild(makeButton('touch_attack_left', () => submitLine('ATTACK LEFT', false)));
+  acts.appendChild(makeButton('touch_attack_right', () => submitLine('ATTACK RIGHT', false)));
+
+  touchpad.style.display = settings.arrowKeys ? 'flex' : 'none';
+  document.body.appendChild(touchpad);
+}
 
 // ---------------------------------------------------------------------------
 // Debug overlay
@@ -713,6 +773,7 @@ function buildPanel(): void {
   keysBox.checked = settings.arrowKeys;
   keysBox.addEventListener('change', () => {
     settings.arrowKeys = keysBox.checked;
+    if (touchpad) touchpad.style.display = settings.arrowKeys ? 'flex' : 'none';
     saveSettings();
   });
   panel.appendChild(keysRow);
