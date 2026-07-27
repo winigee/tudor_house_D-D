@@ -30,7 +30,7 @@ const REPLAYS: Replay[] = [
       { atTick: 400, line: 'STOW RIGHT DROP LEFT GET LEFT' },
     ],
     runTicks: 800,
-    expectedHash: '08408dca',
+    expectedHash: 'bbd26489',
   },
   {
     name: 'm3-pulse-under-load',
@@ -40,7 +40,7 @@ const REPLAYS: Replay[] = [
       { atTick: 400, line: 'T L M M T R M M M M B B' },
     ],
     runTicks: 1200,
-    expectedHash: '82073c57',
+    expectedHash: 'b78ba5b8',
   },
   {
     name: 'm4-first-blood',
@@ -52,7 +52,7 @@ const REPLAYS: Replay[] = [
       { atTick: 600, line: 'A R A R A R A R' },
     ],
     runTicks: 1500,
-    expectedHash: 'be33b357',
+    expectedHash: '0c47d093',
   },
   {
     name: 'm5-full-floor-walk',
@@ -65,7 +65,7 @@ const REPLAYS: Replay[] = [
       { atTick: 900, line: 'INCANT VESPER' },
     ],
     runTicks: 2000,
-    expectedHash: '8822d663',
+    expectedHash: 'dc814abb',
   },
 ];
 

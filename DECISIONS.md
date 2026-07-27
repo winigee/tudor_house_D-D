@@ -70,6 +70,23 @@ option closer to the 1982 original.
   (author's naming) keep their original ids `wizard` and `stone_giant`
   in levels and saves, so committed floor files and replay hashes
   survive the rename.
+- **Creature awareness is measured in corridor cells, so it must span
+  most of a floor.** Measurement showed creatures spawn 58 to 74
+  corridor cells from the player on a 32x32 maze; with the original
+  5-to-9-cell ranges, three exploration runs in five met nothing in
+  200 seconds. Ranges now run 24 to 60 by tier, one spawn group per
+  floor sits within a short walk of the arrival stairs, and floor
+  populations roughly doubled. Measured result: every run meets a
+  creature, median first contact around 75 seconds.
+- **Per-move exertion is 5.5, with carried weight biting harder.**
+  At 7 per move, continuous walking killed an unencumbered player in
+  under a minute, which made exploration impossible; the load factor
+  (weightReference 32) now carries the lethality instead, so a full
+  pack still dies sprinting 42 cells while a light strolling player
+  survives indefinitely.
+- **A stairway that leads out of the dungeon says so.** Floor 1's
+  entry ladder targets a floor that does not exist; rather than
+  reporting nothing there, it reports the hall door sealed above.
 - **Attack keys are X and V, not the spec's Z and X.** A Z binding
   fires on the first keystroke of ZSAVE and ZLOAD, so saves became
   untypeable with the layer enabled; the original had no bindings at

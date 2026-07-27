@@ -66,7 +66,7 @@ export const tuning = {
     /** Beats per minute added per exertion unit. */
     conversionPerUnit: 1.8,
     /** Carried weight at which the conversion factor doubles. */
-    weightReference: 60,
+    weightReference: 32,
     /** Fraction of (target - pulse) applied per tick. */
     approachFactor: 0.035,
     /** Exertion added per point of unblocked creature damage. */
@@ -103,8 +103,8 @@ export const tuning = {
      * (decay 0.4/tick x MOVE cost 12 = 4.8 break-even) or sprinting
      * could never raise the pulse. */
     exertion: {
-      MOVE: 7,
-      BACK: 8,
+      MOVE: 5.5,
+      BACK: 6.5,
       TURN: 1.5,
       ATTACK: 7,
       GET: 2,

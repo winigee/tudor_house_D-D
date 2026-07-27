@@ -5,14 +5,26 @@
     "tier": 1,
     "silhouette": "arachnid",
     "health": 8,
-    "attackDamage": [1, 3],
+    "attackDamage": [
+      1,
+      3
+    ],
     "attackPeriodTicks": 45,
     "movePeriodTicks": 30,
     "aggression": 0.7,
-    "sensesPlayerAt": 6,
-    "damageMultipliers": { "physical": 1.0, "fire": 1.5, "ice": 0.5 },
+    "sensesPlayerAt": 32,
+    "damageMultipliers": {
+      "physical": 1.0,
+      "fire": 1.5,
+      "ice": 0.5
+    },
     "soundId": "step_skitter",
-    "drops": [{ "itemId": "flask_heal", "chance": 0.1 }],
+    "drops": [
+      {
+        "itemId": "flask_heal",
+        "chance": 0.1
+      }
+    ],
     "pulseShock": 4
   },
   {
@@ -21,12 +33,19 @@
     "tier": 1,
     "silhouette": "rodent",
     "health": 5,
-    "attackDamage": [1, 2],
+    "attackDamage": [
+      1,
+      2
+    ],
     "attackPeriodTicks": 35,
     "movePeriodTicks": 22,
-    "aggression": 0.45,
-    "sensesPlayerAt": 5,
-    "damageMultipliers": { "physical": 1.0, "fire": 1.2, "ice": 1.0 },
+    "aggression": 0.6,
+    "sensesPlayerAt": 28,
+    "damageMultipliers": {
+      "physical": 1.0,
+      "fire": 1.2,
+      "ice": 1.0
+    },
     "soundId": "step_scratch",
     "drops": [],
     "pulseShock": 3
@@ -37,14 +56,26 @@
     "tier": 2,
     "silhouette": "serpent",
     "health": 14,
-    "attackDamage": [2, 5],
+    "attackDamage": [
+      2,
+      5
+    ],
     "attackPeriodTicks": 40,
     "movePeriodTicks": 26,
     "aggression": 0.8,
-    "sensesPlayerAt": 7,
-    "damageMultipliers": { "physical": 1.0, "fire": 1.0, "ice": 1.5 },
+    "sensesPlayerAt": 36,
+    "damageMultipliers": {
+      "physical": 1.0,
+      "fire": 1.0,
+      "ice": 1.5
+    },
     "soundId": "step_slither",
-    "drops": [{ "itemId": "flask_vigor", "chance": 0.15 }],
+    "drops": [
+      {
+        "itemId": "flask_vigor",
+        "chance": 0.15
+      }
+    ],
     "pulseShock": 7
   },
   {
@@ -53,14 +84,26 @@
     "tier": 2,
     "silhouette": "blob",
     "health": 20,
-    "attackDamage": [2, 4],
+    "attackDamage": [
+      2,
+      4
+    ],
     "attackPeriodTicks": 55,
     "movePeriodTicks": 45,
-    "aggression": 0.6,
-    "sensesPlayerAt": 4,
-    "damageMultipliers": { "physical": 0.5, "fire": 1.5, "ice": 1.0 },
+    "aggression": 0.7,
+    "sensesPlayerAt": 24,
+    "damageMultipliers": {
+      "physical": 0.5,
+      "fire": 1.5,
+      "ice": 1.0
+    },
     "soundId": "step_squelch",
-    "drops": [{ "itemId": "ring_seeing", "chance": 0.08 }],
+    "drops": [
+      {
+        "itemId": "ring_seeing",
+        "chance": 0.08
+      }
+    ],
     "pulseShock": 6
   },
   {
@@ -69,16 +112,29 @@
     "tier": 3,
     "silhouette": "humanoid",
     "health": 30,
-    "attackDamage": [4, 9],
+    "attackDamage": [
+      4,
+      9
+    ],
     "attackPeriodTicks": 42,
     "movePeriodTicks": 28,
     "aggression": 0.85,
-    "sensesPlayerAt": 8,
-    "damageMultipliers": { "physical": 0.8, "fire": 1.0, "ice": 1.0 },
+    "sensesPlayerAt": 40,
+    "damageMultipliers": {
+      "physical": 0.8,
+      "fire": 1.0,
+      "ice": 1.0
+    },
     "soundId": "step_clank",
     "drops": [
-      { "itemId": "sword_iron", "chance": 0.25 },
-      { "itemId": "shield_bronze", "chance": 0.15 }
+      {
+        "itemId": "sword_iron",
+        "chance": 0.25
+      },
+      {
+        "itemId": "shield_bronze",
+        "chance": 0.15
+      }
     ],
     "pulseShock": 10
   },
@@ -88,14 +144,26 @@
     "tier": 3,
     "silhouette": "wraith",
     "health": 22,
-    "attackDamage": [3, 7],
+    "attackDamage": [
+      3,
+      7
+    ],
     "attackPeriodTicks": 38,
     "movePeriodTicks": 24,
     "aggression": 0.7,
-    "sensesPlayerAt": 9,
-    "damageMultipliers": { "physical": 0.6, "fire": 1.4, "ice": 0.8 },
+    "sensesPlayerAt": 44,
+    "damageMultipliers": {
+      "physical": 0.6,
+      "fire": 1.4,
+      "ice": 0.8
+    },
     "soundId": "step_whisper",
-    "drops": [{ "itemId": "scroll_fear", "chance": 0.2 }],
+    "drops": [
+      {
+        "itemId": "scroll_fear",
+        "chance": 0.2
+      }
+    ],
     "pulseShock": 12
   },
   {
@@ -105,16 +173,29 @@
     "silhouette": "carrot",
     "attackMessageKey": "attack_landed_carrotass",
     "health": 55,
-    "attackDamage": [6, 14],
+    "attackDamage": [
+      6,
+      14
+    ],
     "attackPeriodTicks": 60,
     "movePeriodTicks": 40,
     "aggression": 0.9,
-    "sensesPlayerAt": 7,
-    "damageMultipliers": { "physical": 0.7, "fire": 1.0, "ice": 1.3 },
+    "sensesPlayerAt": 36,
+    "damageMultipliers": {
+      "physical": 0.7,
+      "fire": 1.0,
+      "ice": 1.3
+    },
     "soundId": "step_boom",
     "drops": [
-      { "itemId": "torch_solar", "chance": 0.3 },
-      { "itemId": "flask_heal", "chance": 0.3 }
+      {
+        "itemId": "torch_solar",
+        "chance": 0.3
+      },
+      {
+        "itemId": "flask_heal",
+        "chance": 0.3
+      }
     ],
     "pulseShock": 18
   },
@@ -124,14 +205,26 @@
     "tier": 4,
     "silhouette": "stalker",
     "health": 38,
-    "attackDamage": [5, 11],
+    "attackDamage": [
+      5,
+      11
+    ],
     "attackPeriodTicks": 34,
     "movePeriodTicks": 18,
     "aggression": 0.95,
-    "sensesPlayerAt": 10,
-    "damageMultipliers": { "physical": 1.0, "fire": 1.2, "ice": 1.2 },
+    "sensesPlayerAt": 48,
+    "damageMultipliers": {
+      "physical": 1.0,
+      "fire": 1.2,
+      "ice": 1.2
+    },
     "soundId": "step_click",
-    "drops": [{ "itemId": "sword_rune", "chance": 0.2 }],
+    "drops": [
+      {
+        "itemId": "sword_rune",
+        "chance": 0.2
+      }
+    ],
     "pulseShock": 15
   },
   {
@@ -140,14 +233,26 @@
     "tier": 4,
     "silhouette": "wizard",
     "health": 26,
-    "attackDamage": [4, 10],
+    "attackDamage": [
+      4,
+      10
+    ],
     "attackPeriodTicks": 36,
     "movePeriodTicks": 26,
     "aggression": 0.8,
-    "sensesPlayerAt": 12,
-    "damageMultipliers": { "physical": 1.0, "fire": 0.8, "ice": 0.8 },
+    "sensesPlayerAt": 52,
+    "damageMultipliers": {
+      "physical": 1.0,
+      "fire": 0.8,
+      "ice": 0.8
+    },
     "soundId": "step_chime",
-    "drops": [{ "itemId": "scroll_light", "chance": 0.5 }],
+    "drops": [
+      {
+        "itemId": "scroll_light",
+        "chance": 0.5
+      }
+    ],
     "pulseShock": 14
   },
   {
@@ -157,12 +262,19 @@
     "silhouette": "wizard",
     "attackMessageKey": "attack_landed_ross",
     "health": 70,
-    "attackDamage": [8, 16],
+    "attackDamage": [
+      8,
+      16
+    ],
     "attackPeriodTicks": 40,
     "movePeriodTicks": 22,
     "aggression": 0.9,
-    "sensesPlayerAt": 14,
-    "damageMultipliers": { "physical": 0.9, "fire": 0.7, "ice": 0.7 },
+    "sensesPlayerAt": 60,
+    "damageMultipliers": {
+      "physical": 0.9,
+      "fire": 0.7,
+      "ice": 0.7
+    },
     "soundId": "step_chime",
     "drops": [],
     "pulseShock": 22

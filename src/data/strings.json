@@ -55,6 +55,7 @@
   "incant_light": "COLD RADIANCE SPILLS FROM YOUR TORCH.",
   "incant_calm": "YOUR HEART GROWS STILL AND SLOW.",
   "no_stairs_up": "NOTHING HERE LEADS UPWARD.",
+  "stairs_sealed": "THE HALL DOOR IS SEALED ABOVE. THE ONLY WAY IS DOWN.",
   "no_stairs_down": "NOTHING HERE LEADS DOWNWARD.",
   "climbed_up": "YOU CLIMB TO FLOOR {floor}.",
   "climbed_down": "YOU DESCEND TO FLOOR {floor}.",

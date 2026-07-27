@@ -31,7 +31,14 @@ interface FloorSpec {
   doors: number;
   secretDoors: number;
   items: string[];
-  spawns: { creatureId: string; count: number; respawn?: { afterTicks: number; max: number } }[];
+  spawns: {
+    creatureId: string;
+    count: number;
+    respawn?: { afterTicks: number; max: number };
+    /** Place this group a short walk from the arrival stairs, so the
+     * player meets something within the first minute of exploring. */
+    nearEntry?: boolean;
+  }[];
 }
 
 const FLOORS: FloorSpec[] = [
@@ -41,9 +48,15 @@ const FLOORS: FloorSpec[] = [
     doors: 12,
     secretDoors: 2,
     items: ['torch_pine', 'torch_pine', 'dagger', 'shield_leather', 'flask_heal'],
+    // Several small spawn points beat one big one: creatures start
+    // spread across the floor, so exploring meets something within a
+    // minute instead of crossing an empty maze.
     spawns: [
       { creatureId: 'spider', count: 2, respawn: { afterTicks: 1800, max: 3 } },
-      { creatureId: 'cave_rat', count: 3, respawn: { afterTicks: 1200, max: 4 } },
+      { creatureId: 'spider', count: 1, respawn: { afterTicks: 1800, max: 2 } },
+      { creatureId: 'cave_rat', count: 2, respawn: { afterTicks: 1200, max: 3 }, nearEntry: true },
+      { creatureId: 'cave_rat', count: 2, respawn: { afterTicks: 1200, max: 3 } },
+      { creatureId: 'cave_rat', count: 1, respawn: { afterTicks: 1200, max: 2 } },
     ],
   },
   {
@@ -53,9 +66,12 @@ const FLOORS: FloorSpec[] = [
     secretDoors: 3,
     items: ['torch_bronze', 'torch_bronze', 'sword_iron', 'flask_heal', 'flask_vigor', 'scroll_light'],
     spawns: [
+      { creatureId: 'spider', count: 2, respawn: { afterTicks: 1800, max: 3 }, nearEntry: true },
       { creatureId: 'spider', count: 2, respawn: { afterTicks: 1800, max: 3 } },
       { creatureId: 'viper', count: 2, respawn: { afterTicks: 2400, max: 3 } },
+      { creatureId: 'viper', count: 1, respawn: { afterTicks: 2400, max: 2 } },
       { creatureId: 'gray_ooze', count: 1, respawn: { afterTicks: 3000, max: 2 } },
+      { creatureId: 'cave_rat', count: 2, respawn: { afterTicks: 1200, max: 3 } },
     ],
   },
   {
@@ -65,9 +81,12 @@ const FLOORS: FloorSpec[] = [
     secretDoors: 4,
     items: ['torch_bronze', 'torch_lunar', 'shield_bronze', 'ring_seeing', 'flask_heal', 'flask_heal', 'scroll_fear'],
     spawns: [
+      { creatureId: 'viper', count: 2, respawn: { afterTicks: 2400, max: 3 }, nearEntry: true },
       { creatureId: 'viper', count: 2, respawn: { afterTicks: 2400, max: 3 } },
       { creatureId: 'hollow_knight', count: 2, respawn: { afterTicks: 3000, max: 2 } },
+      { creatureId: 'hollow_knight', count: 1, respawn: { afterTicks: 3000, max: 2 } },
       { creatureId: 'barrow_shade', count: 2, respawn: { afterTicks: 2700, max: 3 } },
+      { creatureId: 'gray_ooze', count: 1, respawn: { afterTicks: 3000, max: 2 } },
     ],
   },
   {
@@ -77,7 +96,9 @@ const FLOORS: FloorSpec[] = [
     secretDoors: 5,
     items: ['torch_lunar', 'torch_solar', 'ring_fire', 'flask_heal', 'flask_heal', 'scroll_calm', 'shield_mithral'],
     spawns: [
+      { creatureId: 'hollow_knight', count: 2, respawn: { afterTicks: 3000, max: 2 }, nearEntry: true },
       { creatureId: 'hollow_knight', count: 2, respawn: { afterTicks: 3000, max: 2 } },
+      { creatureId: 'barrow_shade', count: 2, respawn: { afterTicks: 2700, max: 3 } },
       { creatureId: 'stone_giant', count: 1, respawn: { afterTicks: 3600, max: 2 } },
       { creatureId: 'pale_stalker', count: 2, respawn: { afterTicks: 3200, max: 2 } },
       { creatureId: 'wizard_image', count: 1, respawn: { afterTicks: 3600, max: 1 } },
@@ -90,9 +111,12 @@ const FLOORS: FloorSpec[] = [
     secretDoors: 6,
     items: ['torch_solar', 'ring_ice', 'flask_heal', 'flask_heal', 'sword_rune'],
     spawns: [
+      { creatureId: 'pale_stalker', count: 2, respawn: { afterTicks: 3200, max: 2 }, nearEntry: true },
       { creatureId: 'pale_stalker', count: 2, respawn: { afterTicks: 3200, max: 2 } },
       { creatureId: 'stone_giant', count: 1, respawn: { afterTicks: 3600, max: 1 } },
+      { creatureId: 'stone_giant', count: 1, respawn: { afterTicks: 3600, max: 1 } },
       { creatureId: 'wizard_image', count: 2, respawn: { afterTicks: 3600, max: 2 } },
+      { creatureId: 'wizard_image', count: 1, respawn: { afterTicks: 3600, max: 2 } },
       { creatureId: 'wizard', count: 1 },
     ],
   },
@@ -270,12 +294,17 @@ function main(): void {
     });
 
     const creatureSpawns = spec.spawns.map((s) => {
-      // Spawn points keep away from the stairs the player arrives on.
+      // Spawn points keep clear of the arrival stairs; a group marked
+      // nearEntry sits within a short walk of them instead.
+      const minAway = 6;
+      const maxAway = s.nearEntry ? 16 : Infinity;
       let at: [number, number];
       let guard = 0;
       do {
         at = randomFreeCell(rng, taken);
-      } while (Math.abs(at[0] - stairsUpAt[0]) + Math.abs(at[1] - stairsUpAt[1]) < 6 && guard++ < 200);
+        const away = Math.abs(at[0] - stairsUpAt[0]) + Math.abs(at[1] - stairsUpAt[1]);
+        if (away >= minAway && away <= maxAway) break;
+      } while (guard++ < 400);
       taken.add(`${at[0]},${at[1]}`);
       return { creatureId: s.creatureId, at, count: s.count, ...(s.respawn ? { respawn: s.respawn } : {}) };
     });

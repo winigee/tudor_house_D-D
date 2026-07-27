@@ -405,7 +405,10 @@ function resolveClimb(content: Content, state: GameState, dir: 'UP' | 'DOWN', ev
   }
   const target = content.levels[stairs.to];
   if (!target) {
-    events.push({ type: 'message', key: dir === 'UP' ? 'no_stairs_up' : 'no_stairs_down' });
+    // The way exists but leads out of the dungeon: floor 1's entry
+    // ladder is sealed behind the player, so say so rather than
+    // claiming there is nothing here.
+    events.push({ type: 'message', key: 'stairs_sealed' });
     return;
   }
   // Arrive at the matching stairs on the target floor.
