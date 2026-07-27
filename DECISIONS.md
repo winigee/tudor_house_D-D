@@ -66,6 +66,9 @@ option closer to the 1982 original.
 - **Victory triggers on any tier-5 kill.** Only the Ross (creature id
   `wizard`) is tier 5; the rule lives in data rather than a hard-coded
   id.
+- **The top shield is the CHORISTER SHIELD** (author's naming), keeping
+  the internal id `shield_mithral` so level files and saves are
+  untouched, exactly as with Ross and the CarrotAss.
 - **Boss names are display-only changes.** The Ross and the CarrotAss
   (author's naming) keep their original ids `wizard` and `stone_giant`
   in levels and saves, so committed floor files and replay hashes
