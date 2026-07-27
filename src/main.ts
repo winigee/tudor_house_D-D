@@ -334,6 +334,7 @@ function restart(): void {
   hud.log = [];
   hud.lookOverlay = null;
   hud.inputBuffer = '';
+  if (mobileInput) mobileInput.value = '';
   pendingIntents.length = 0;
   knownCreatures.clear();
   tween.snap();
@@ -440,13 +441,16 @@ window.addEventListener('keydown', (ev) => {
 
   if (settings.arrowKeys) {
     // The accessibility layer enqueues exactly what the parser produces.
+    // Attack keys live on X/V, not the spec's Z/X: a Z binding swallows
+    // the first keystroke of ZSAVE and ZLOAD, making saves untypeable
+    // while the layer is on. No verb starts with X or V (DECISIONS.md).
     const bound: Record<string, string> = {
       ArrowUp: 'MOVE',
       ArrowDown: 'BACK',
       ArrowLeft: 'TURN LEFT',
       ArrowRight: 'TURN RIGHT',
-      z: 'ATTACK LEFT',
-      x: 'ATTACK RIGHT',
+      x: 'ATTACK LEFT',
+      v: 'ATTACK RIGHT',
     };
     const keyId = ev.key.length === 1 ? ev.key.toLowerCase() : ev.key;
     const line = bound[keyId];
@@ -656,7 +660,7 @@ function frame(now: number): void {
   const scene = buildScene(content, game.state, radius, brightest, now);
   const seen = visibleCreatures(content, game.state, cam, radius, scene.visible);
   const inserts = creatureInserts(ictx, content, game.state, cam, seen, settings.faceMode, fg, radius, brightest);
-  drawScene(ictx, scene, cam, fg, inserts);
+  drawScene(ictx, scene, cam, fg, bg, inserts);
   // A blocked step flashes the view border so the wall is unmissable.
   if (now - lastBumpMs < 160) {
     ictx.strokeStyle = fg;

@@ -12,9 +12,14 @@ export const tuning = {
     internalHeight: 192,
     /** World band height in internal pixels (upper two thirds; trimmed
      * from the spec's 70% to give the text bands breathing room). */
-    worldHeight: 124,
+    worldHeight: 120,
     /** Horizontal field of view, degrees. */
     fovDegrees: 90,
+    /** Vertical focal length in pixels. Smaller than the horizontal
+     * focal (128) so the wall you face square-on keeps its top and
+     * bottom edges inside the band — the original's squat anamorphic
+     * corridor look. */
+    verticalFocal: 96,
     /** Move / turn visual transition, milliseconds. */
     transitionMs: 180,
     /** Near clip plane distance, world units. */

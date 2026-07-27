@@ -12,19 +12,19 @@ const W = tuning.render.internalWidth;
 const H = tuning.render.internalHeight;
 const WORLD_H = tuning.render.worldHeight;
 
-// Band layout inside the 68 rows under the world view. The log's last
-// line must end above the divider or messages paint over the prompt,
-// and the command row keeps clear bottom margin so it survives the
-// CRT pass's barrel curve.
-const HANDS_Y = WORLD_H + 2; // 126..143
+// Band layout inside the 72 rows under the world view. The command
+// row owns a full boxed line of its own at the foot, with margin
+// below so it survives the CRT pass's barrel curve.
+const HANDS_Y = WORLD_H + 2; // 122..139
 const HANDS_H = 18;
-const PULSE_Y = HANDS_Y + HANDS_H + 2; // 146..150
+const PULSE_Y = HANDS_Y + HANDS_H + 2; // 142..146
 const PULSE_H = 5;
-const LOG_Y = PULSE_Y + PULSE_H + 3; // 154, 162, 170
+const LOG_Y = PULSE_Y + PULSE_H + 3; // 149, 157, 165
 const LOG_LINES = 3;
 const LOG_PITCH = 8;
-const DIVIDER_Y = H - 13; // 179
-const CMD_Y = H - 11; // 181..187, 4 rows of margin below
+const CMD_BOX_Y = H - 18; // 174..188
+const CMD_BOX_H = 14;
+const CMD_Y = CMD_BOX_Y + 4; // text rows 178..184, 4px margin below box
 
 export interface HudState {
   log: string[];
@@ -151,15 +151,13 @@ export function drawHud(
     }
   }
 
-  // Divider between the log and the command row.
-  ctx.fillRect(0, DIVIDER_Y, W, 1);
-
-  // Command line with blinking block cursor.
+  // The command line owns a full boxed row with a blinking block cursor.
+  ctx.strokeRect(0.5, CMD_BOX_Y + 0.5, W - 1, CMD_BOX_H - 1);
   const prompt = '>';
-  const shown = `${prompt}${hud.inputBuffer}`.slice(-42);
-  drawText(ctx, shown, 3, CMD_Y);
+  const shown = `${prompt}${hud.inputBuffer}`.slice(-41);
+  drawText(ctx, shown, 4, CMD_Y);
   if (Math.floor(nowMs / tuning.render.cursorBlinkMs) % 2 === 0) {
-    ctx.fillRect(3 + textWidth(shown), CMD_Y, ADVANCE - 1, 7);
+    ctx.fillRect(4 + textWidth(shown), CMD_Y - 1, ADVANCE - 1, 9);
   }
 }
 

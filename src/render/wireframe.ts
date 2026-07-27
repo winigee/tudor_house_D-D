@@ -230,7 +230,17 @@ function itemIconGeometry(kind: ItemKind, x: number, y: number, phase: number): 
   return segs;
 }
 
+/** A wall plane: filled black then outlined, so near walls occlude far
+ * geometry the way the original's surface renderer did. */
+export interface Face {
+  corners: [number, number, number][];
+  dist: number;
+  /** Door frame lines drawn with (and over) this face. */
+  extraLines: Segment[];
+}
+
 export interface Scene {
+  faces: Face[];
   segments: Segment[];
   visible: Set<number>;
   radius: number;
@@ -244,6 +254,7 @@ export function buildScene(content: Content, state: GameState, radius: number, b
   const effRadius = Math.max(0, radius);
   const visible = visibleCells(level, p.x, p.y, effRadius);
   const segs: Segment[] = [];
+  const faces: Face[] = [];
   const seen = new Set<string>();
   const runtime = state.levels[p.levelId]!;
 
@@ -267,15 +278,12 @@ export function buildScene(content: Content, state: GameState, radius: number, b
       const key = wallKey(x, y, side);
       if (seen.has(key)) continue;
       seen.add(key);
-      pushRect(
-        segs,
-        cellDist,
-        wallCorners(x, y, side).map(([wx, wy, wz]) => [wx, wy, wz] as [number, number, number]),
-      );
+      const face: Face = { corners: wallCorners(x, y, side), dist: cellDist, extraLines: [] };
       const door = doorAt(level, x, y, side);
       if (door && (!door.secret || runtime.discoveredSecrets.includes(`${door.at[0]},${door.at[1]},${door.side}`))) {
-        for (const s of doorFrame(x, y, side)) segs.push({ ...s, dist: cellDist });
+        face.extraLines = doorFrame(x, y, side).map((s) => ({ ...s, dist: cellDist }));
       }
+      faces.push(face);
     }
     const feature = cellAt(level, x, y).feature;
     if (feature === 'stairsDown') for (const s of stairsDownGeometry(x, y)) segs.push({ ...s, dist: cellDist });
@@ -289,7 +297,7 @@ export function buildScene(content: Content, state: GameState, radius: number, b
       }
     }
   }
-  return { segments: segs, visible, radius: effRadius, brightest };
+  return { faces, segments: segs, visible, radius: effRadius, brightest };
 }
 
 const NEAR = tuning.render.nearClip;
@@ -309,28 +317,49 @@ export interface SceneInsert {
   draw: () => void;
 }
 
-/** Project and stroke the scene, back to front, interleaving inserts
- * (creature billboards) at their own depth so near walls overdraw them. */
+/** Sutherland-Hodgman clip of a camera-space polygon against z >= NEAR. */
+function clipPolyNear(pts: [number, number, number][]): [number, number, number][] {
+  const out: [number, number, number][] = [];
+  for (let i = 0; i < pts.length; i++) {
+    const a = pts[i]!;
+    const b = pts[(i + 1) % pts.length]!;
+    const aIn = a[2] >= NEAR;
+    const bIn = b[2] >= NEAR;
+    if (aIn) out.push(a);
+    if (aIn !== bIn) {
+      const t = (NEAR - a[2]) / (b[2] - a[2]);
+      out.push([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, NEAR]);
+    }
+  }
+  return out;
+}
+
+/**
+ * Project and paint the scene back to front. Wall faces fill with the
+ * background before their outline strokes, so near walls occlude far
+ * geometry; seams, stairs, item icons and door frames draw as lines;
+ * creature inserts interleave at their own depth.
+ */
 export function drawScene(
   ctx: CanvasRenderingContext2D,
   scene: Scene,
   cam: Camera,
   fg: string,
+  bg: string,
   inserts: SceneInsert[] = [],
 ): void {
   interface Drawable {
     depth: number;
-    ax: number;
-    ay: number;
-    bx: number;
-    by: number;
-    dash: number[];
+    /** Paint order at equal depth: fills, then lines, then inserts. */
+    tie: number;
+    draw: () => void;
   }
   const drawables: Drawable[] = [];
-  for (const seg of scene.segments) {
+
+  const projectSegment = (seg: Segment): { ax: number; ay: number; bx: number; by: number; depth: number } | null => {
     let [ax, ay, az] = toCameraSpace(cam, seg.ax, seg.ay, seg.az);
     let [bx, by, bz] = toCameraSpace(cam, seg.bx, seg.by, seg.bz);
-    if (az < NEAR && bz < NEAR) continue;
+    if (az < NEAR && bz < NEAR) return null;
     if (az < NEAR || bz < NEAR) {
       const t = (NEAR - az) / (bz - az);
       const ix = ax + (bx - ax) * t;
@@ -347,40 +376,80 @@ export function drawScene(
     }
     const a = projectCameraSpace(ax, ay, az);
     const b = projectCameraSpace(bx, by, bz);
-    const idx = intensityIndex(seg.dist, scene.radius, scene.brightest);
+    return { ax: a.sx, ay: a.sy, bx: b.sx, by: b.sy, depth: Math.max(az, bz) };
+  };
+
+  for (const face of scene.faces) {
+    const camPts = face.corners.map(([wx, wy, wz]) => {
+      const [xc, yc, zc] = toCameraSpace(cam, wx, wy, wz);
+      return [xc, yc, zc] as [number, number, number];
+    });
+    const clipped = clipPolyNear(camPts);
+    if (clipped.length < 3) continue;
+    const screen = clipped.map(([xc, yc, zc]) => projectCameraSpace(xc, yc, zc));
+    const depth = Math.max(...clipped.map((p) => p[2]));
+    const dash = tuning.render.dashPatterns[intensityIndex(face.dist, scene.radius, scene.brightest)]!;
+    const extra = face.extraLines
+      .map((s) => projectSegment(s))
+      .filter((s): s is NonNullable<typeof s> => s !== null);
     drawables.push({
-      depth: Math.max(az, bz),
-      ax: a.sx,
-      ay: a.sy,
-      bx: b.sx,
-      by: b.sy,
-      dash: tuning.render.dashPatterns[idx]!,
+      depth,
+      tie: 0,
+      draw: () => {
+        ctx.fillStyle = bg;
+        ctx.beginPath();
+        screen.forEach((pt, i) => {
+          const sx = Math.round(pt.sx) + 0.5;
+          const sy = Math.round(pt.sy) + 0.5;
+          if (i === 0) ctx.moveTo(sx, sy);
+          else ctx.lineTo(sx, sy);
+        });
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = fg;
+        ctx.setLineDash(dash);
+        ctx.stroke();
+        for (const line of extra) {
+          ctx.beginPath();
+          ctx.moveTo(Math.round(line.ax) + 0.5, Math.round(line.ay) + 0.5);
+          ctx.lineTo(Math.round(line.bx) + 0.5, Math.round(line.by) + 0.5);
+          ctx.stroke();
+        }
+        ctx.setLineDash([]);
+      },
     });
   }
-  drawables.sort((a, b) => b.depth - a.depth);
-  const queue = [...inserts].sort((a, b) => b.depth - a.depth);
+
+  for (const seg of scene.segments) {
+    const s = projectSegment(seg);
+    if (!s) continue;
+    const dash = tuning.render.dashPatterns[intensityIndex(seg.dist, scene.radius, scene.brightest)]!;
+    drawables.push({
+      depth: s.depth,
+      tie: 1,
+      draw: () => {
+        ctx.strokeStyle = fg;
+        ctx.setLineDash(dash);
+        ctx.beginPath();
+        ctx.moveTo(Math.round(s.ax) + 0.5, Math.round(s.ay) + 0.5);
+        ctx.lineTo(Math.round(s.bx) + 0.5, Math.round(s.by) + 0.5);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      },
+    });
+  }
+
+  for (const insert of inserts) {
+    drawables.push({ depth: insert.depth, tie: 2, draw: insert.draw });
+  }
+
+  // Back to front; at equal depth fills go first so edge lines and
+  // billboards sharing a plane stay visible.
+  drawables.sort((a, b) => (b.depth - a.depth) || (a.tie - b.tie));
 
   ctx.save();
-  ctx.strokeStyle = fg;
   ctx.lineWidth = 1;
-  let qi = 0;
-  for (const d of drawables) {
-    while (qi < queue.length && queue[qi]!.depth >= d.depth) {
-      ctx.setLineDash([]);
-      queue[qi]!.draw();
-      qi++;
-      ctx.strokeStyle = fg;
-    }
-    ctx.setLineDash(d.dash);
-    ctx.beginPath();
-    ctx.moveTo(Math.round(d.ax) + 0.5, Math.round(d.ay) + 0.5);
-    ctx.lineTo(Math.round(d.bx) + 0.5, Math.round(d.by) + 0.5);
-    ctx.stroke();
-  }
+  for (const d of drawables) d.draw();
   ctx.setLineDash([]);
-  while (qi < queue.length) {
-    queue[qi]!.draw();
-    qi++;
-  }
   ctx.restore();
 }

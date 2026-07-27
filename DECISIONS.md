@@ -70,6 +70,11 @@ option closer to the 1982 original.
   (author's naming) keep their original ids `wizard` and `stone_giant`
   in levels and saves, so committed floor files and replay hashes
   survive the rename.
+- **Attack keys are X and V, not the spec's Z and X.** A Z binding
+  fires on the first keystroke of ZSAVE and ZLOAD, so saves became
+  untypeable with the layer enabled; the original had no bindings at
+  all, so typed verbs keep absolute priority and the attack keys sit
+  on letters no verb starts with.
 - **Debug commands are typed with a `$` prefix** (`$TELEPORT x y`,
   `$SPAWN id`, `$PULSE`, `$TORCH`), parsed only under `?debug=1`, so the
   shipping parser has no reserved words beyond the sixteen verbs.

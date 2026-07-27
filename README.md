@@ -29,7 +29,7 @@ You begin with a pine torch and a wooden sword in your pack, in the
 dark. Try: `PULL TORCH LEFT`, `USE LEFT`, `PULL SWORD RIGHT`, then
 `MOVE`, `TURN LEFT`, `ATTACK RIGHT`. `LOOK` lists pack and floor.
 `CLIMB DOWN` takes stairs. `ZSAVE 1` / `ZLOAD 1` save and restore.
-Escape flushes queued commands. The arrow keys and Z/X mirror the
+Escape flushes queued commands. The arrow keys and X/V mirror the
 movement and attack verbs (toggle in the settings panel, top right).
 
 The Ross waits on floor 5, and the CarrotAss prowls the deep floors

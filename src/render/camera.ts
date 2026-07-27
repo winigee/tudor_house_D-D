@@ -22,6 +22,7 @@ export interface Projected {
 const W = tuning.render.internalWidth;
 const WORLD_H = tuning.render.worldHeight;
 const FOCAL = W / 2 / Math.tan(((tuning.render.fovDegrees / 2) * Math.PI) / 180);
+const FOCAL_Y = tuning.render.verticalFocal;
 const HORIZON = WORLD_H / 2;
 
 export function toCameraSpace(cam: Camera, wx: number, wy: number, wz: number): [number, number, number] {
@@ -39,7 +40,7 @@ export function toCameraSpace(cam: Camera, wx: number, wy: number, wz: number): 
 export function projectCameraSpace(xc: number, yc: number, zc: number): Projected {
   return {
     sx: W / 2 + (FOCAL * xc) / zc,
-    sy: HORIZON - (FOCAL * yc) / zc,
+    sy: HORIZON - (FOCAL_Y * yc) / zc,
     zc,
   };
 }
