@@ -120,6 +120,12 @@ function palette(): { fg: string; bg: string } {
 // Canvas plumbing
 
 const stage = document.getElementById('stage')!;
+// Touch devices get a visible native command bar at the foot of the
+// screen (the only reliable way to summon the phone keyboard) plus
+// the on-screen button pad; both need room reserved below the canvas.
+const touchCapable = navigator.maxTouchPoints > 0 || 'ontouchstart' in window;
+const TOUCH_BAR_PX = 40;
+if (touchCapable) stage.style.paddingBottom = `${TOUCH_BAR_PX}px`;
 const internal = document.createElement('canvas');
 internal.width = tuning.render.internalWidth;
 internal.height = tuning.render.internalHeight;
@@ -133,7 +139,8 @@ function setupDisplay(): void {
   if (displayCanvas) displayCanvas.remove();
   displayCanvas = document.createElement('canvas');
   const availW = window.visualViewport?.width ?? window.innerWidth;
-  const availH = window.visualViewport?.height ?? window.innerHeight;
+  let availH = window.visualViewport?.height ?? window.innerHeight;
+  if (touchCapable) availH = Math.max(120, availH - TOUCH_BAR_PX);
   const fit = Math.min(availW / tuning.render.internalWidth, availH / tuning.render.internalHeight);
   const scale = Math.max(1, Math.floor(fit));
   displayCanvas.width = tuning.render.internalWidth * scale;
@@ -343,9 +350,8 @@ function restart(): void {
   pushLog('intro_3');
 }
 
-// On touch devices a hidden text input carries the phone keyboard's
+// On touch devices a visible text bar carries the phone keyboard's
 // text into the same submit path the desktop key handler uses.
-const touchCapable = navigator.maxTouchPoints > 0 || 'ontouchstart' in window;
 let mobileInput: HTMLInputElement | null = null;
 
 function sanitizeLine(raw: string): string {
@@ -358,6 +364,7 @@ if (touchCapable) {
   mobileInput.type = 'text';
   mobileInput.autocomplete = 'off';
   mobileInput.spellcheck = false;
+  mobileInput.placeholder = formatString(strings, 'touch_prompt');
   mobileInput.setAttribute('autocapitalize', 'characters');
   mobileInput.setAttribute('autocorrect', 'off');
   mobileInput.setAttribute('enterkeyhint', 'go');

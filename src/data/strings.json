@@ -88,6 +88,7 @@
   "touch_attack_left": "ATK L",
   "touch_attack_right": "ATK R",
   "touch_escape": "ESC",
+  "touch_prompt": "TYPE COMMANDS HERE",
   "settings_export": "EXPORT SAVE",
   "settings_import": "IMPORT SAVE",
   "credits_header": "PHOTOGRAPH CREDITS",

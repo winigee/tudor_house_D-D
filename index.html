@@ -19,13 +19,16 @@
       touch-action: manipulation; -webkit-user-select: none; user-select: none;
     }
     #cmdinput {
-      position: fixed; bottom: 0; left: 0; width: 100%; height: 28px;
-      opacity: 0.01; font-size: 16px; border: none; outline: none;
-      background: transparent; color: transparent; caret-color: transparent;
-      z-index: 5;
+      position: fixed; bottom: 0; left: 0; width: 100%; height: 38px;
+      box-sizing: border-box; padding: 0 10px;
+      font-family: monospace; font-size: 16px;
+      background: #000; color: #cfcfcf; caret-color: #cfcfcf;
+      border: none; border-top: 1px solid #555; outline: none;
+      z-index: 6;
     }
+    #cmdinput::placeholder { color: #555; }
     #touchpad {
-      position: fixed; bottom: 34px; left: 0; width: 100%;
+      position: fixed; bottom: 46px; left: 0; width: 100%;
       display: flex; justify-content: space-between; align-items: flex-end;
       padding: 0 10px 6px; box-sizing: border-box; z-index: 4;
       pointer-events: none; -webkit-tap-highlight-color: transparent;
