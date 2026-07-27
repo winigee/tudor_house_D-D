@@ -12,19 +12,19 @@ const W = tuning.render.internalWidth;
 const H = tuning.render.internalHeight;
 const WORLD_H = tuning.render.worldHeight;
 
-// Band layout inside the 72 rows under the world view. The command
-// row owns a full boxed line of its own at the foot, with margin
-// below so it survives the CRT pass's barrel curve.
-const HANDS_Y = WORLD_H + 2; // 122..139
+// Band layout inside the 76 rows under the world view. The command
+// row owns a full boxed line of its own at the foot, with six rows of
+// margin below so it survives CRT curvature and display overscan.
+const HANDS_Y = WORLD_H + 2; // 118..135
 const HANDS_H = 18;
-const PULSE_Y = HANDS_Y + HANDS_H + 2; // 142..146
+const PULSE_Y = HANDS_Y + HANDS_H + 2; // 138..142
 const PULSE_H = 5;
-const LOG_Y = PULSE_Y + PULSE_H + 3; // 149, 157, 165
+const LOG_Y = PULSE_Y + PULSE_H + 3; // 145, 154, 163
 const LOG_LINES = 3;
-const LOG_PITCH = 8;
-const CMD_BOX_Y = H - 18; // 174..188
+const LOG_PITCH = 9;
+const CMD_BOX_Y = H - 20; // 172..186
 const CMD_BOX_H = 14;
-const CMD_Y = CMD_BOX_Y + 4; // text rows 178..184, 4px margin below box
+const CMD_Y = CMD_BOX_Y + 4; // text rows 176..182, 6px margin below box
 
 export interface HudState {
   log: string[];
@@ -32,6 +32,8 @@ export interface HudState {
   lookOverlay: { pack: string[]; floor: string[] } | null;
   portrait: { defId: string; name: string | null } | null;
   strings: Record<string, string>;
+  /** Build version stamped top-right so screenshots identify the build. */
+  version: string;
 }
 
 export function formatString(strings: Record<string, string>, key: string, params?: Record<string, string | number>): string {
@@ -91,6 +93,9 @@ export function drawHud(
   ctx.fillStyle = fg;
   ctx.strokeStyle = fg;
   ctx.lineWidth = 1;
+
+  // Version stamp, top-right of the world view.
+  if (hud.version) drawText(ctx, hud.version, W - textWidth(hud.version) - 2, 2);
 
   // Frame under the world view.
   ctx.strokeRect(0.5, WORLD_H + 0.5, W - 1, H - WORLD_H - 1);

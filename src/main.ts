@@ -188,6 +188,7 @@ const hud: HudState = {
   lookOverlay: null,
   portrait: null,
   strings,
+  version: `V${pkg.version}`,
 };
 
 function pushLog(key: string, paramsMap?: Record<string, string | number>): void {

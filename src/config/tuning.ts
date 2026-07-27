@@ -12,7 +12,7 @@ export const tuning = {
     internalHeight: 192,
     /** World band height in internal pixels (upper two thirds; trimmed
      * from the spec's 70% to give the text bands breathing room). */
-    worldHeight: 120,
+    worldHeight: 116,
     /** Horizontal field of view, degrees. */
     fovDegrees: 90,
     /** Vertical focal length in pixels. Smaller than the horizontal
